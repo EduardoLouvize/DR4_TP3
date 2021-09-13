@@ -1,5 +1,6 @@
 package br.edu.infnet.domain;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @Entity
 @EnableFeignClients
-public class Endereco {
+public class Endereco implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -20,7 +21,7 @@ public class Endereco {
     private String localidade;
     private String uf;
    
-
+//
 //    public Endereco() {
 //    }    
     

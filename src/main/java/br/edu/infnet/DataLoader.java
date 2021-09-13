@@ -22,7 +22,7 @@ public class DataLoader implements ApplicationRunner{
     public void run(ApplicationArguments args) throws Exception {
         Usuario usuario = new Usuario();
         Endereco endereco;
-//        endereco = viaCepService.BuscarEnderecoPor("03607000");
+        endereco = viaCepService.BuscarEnderecoPor("03607000");
              
         
         
@@ -31,7 +31,7 @@ public class DataLoader implements ApplicationRunner{
         usuario.setEmail("bilbobolseiro@terramedia.com");
         usuario.setTelefone("23569874");
         usuario.setCep("03607000");
-//        usuario.setEndereco(endereco);
+        usuario.setEndereco(endereco);
         
        usuarioService.Incluir(usuario);
         
