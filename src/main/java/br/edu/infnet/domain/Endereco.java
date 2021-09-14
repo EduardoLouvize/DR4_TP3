@@ -21,9 +21,9 @@ public class Endereco implements Serializable {
     private String localidade;
     private String uf;
    
-//
-//    public Endereco() {
-//    }    
+
+    public Endereco() {
+    }    
     
 
     public String getCep() {

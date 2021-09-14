@@ -15,12 +15,15 @@ public class DataLoader implements ApplicationRunner{
     
     @Autowired
     private UsuarioService usuarioService;
+    
+    @Autowired
     private ViaCepService viaCepService;
 
    
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Usuario usuario = new Usuario();
+        
         Endereco endereco;
         endereco = viaCepService.BuscarEnderecoPor("03607000");
              
@@ -28,9 +31,12 @@ public class DataLoader implements ApplicationRunner{
         
         
         usuario.setNome("Bilbo Bolseiro");
+        
         usuario.setEmail("bilbobolseiro@terramedia.com");
         usuario.setTelefone("23569874");
+        System.out.println("!!!Foi até aqui!!!");
         usuario.setCep("03607000");
+        
         usuario.setEndereco(endereco);
         
        usuarioService.Incluir(usuario);

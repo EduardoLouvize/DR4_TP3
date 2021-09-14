@@ -3,6 +3,7 @@ package br.edu.infnet.domain.controller;
 import br.edu.infnet.domain.Endereco;
 import br.edu.infnet.domain.Usuario;
 import br.edu.infnet.repository.UsuarioRepository;
+import br.edu.infnet.service.ViaCepService;
 import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class UsuarioController {
 
     @Autowired
     UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    ViaCepService viaCepService;
 
     @GetMapping(path = {"/"})
     public ResponseEntity ObterUsuarios() {
@@ -87,12 +91,14 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity InserirUsuario(@RequestBody Usuario usuario, @RequestBody Endereco endereco) {
+    public ResponseEntity InserirUsuario(@RequestBody Usuario usuario) {//, @RequestBody Endereco endereco) {
         System.out.println("Entrou no Post");
         ResponseEntity retorno = ResponseEntity.badRequest().build();
 
         try {
-            if (usuario != null && usuario.getId() == null && endereco != null && endereco.getId() == null) {
+            if (usuario != null && usuario.getId() == null) {// && endereco != null && endereco.getId() == null) {
+                
+                Endereco endereco = viaCepService.BuscarEnderecoPor(usuario.getCep());
                 
                 usuario.setEndereco(endereco);
                 
