@@ -1,15 +1,15 @@
 package br.edu.infnet.domain;
 
-import br.edu.infnet.service.ViaCepService;
 import java.io.Serializable;
+
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 public class Usuario implements Serializable {
@@ -20,7 +20,8 @@ public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String nome;
+    private String nome;   
+    @Column(unique = true)
     private String email;
     private String telefone;
     private String cep;

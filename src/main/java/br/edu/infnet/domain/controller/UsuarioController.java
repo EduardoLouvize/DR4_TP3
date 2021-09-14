@@ -1,13 +1,11 @@
 package br.edu.infnet.domain.controller;
 
-import br.edu.infnet.domain.Endereco;
-import br.edu.infnet.domain.Usuario;
-import br.edu.infnet.repository.UsuarioRepository;
-import br.edu.infnet.service.ViaCepService;
 import java.net.URI;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.edu.infnet.domain.Endereco;
+import br.edu.infnet.domain.Usuario;
+import br.edu.infnet.repository.UsuarioRepository;
+import br.edu.infnet.service.ViaCepService;
 
 @RestController
 @RequestMapping(path = {"/usuarios"})
@@ -88,21 +91,22 @@ public class UsuarioController {
         }
 
         return retorno;
-    }
+    }	
 
     @PostMapping
-    public ResponseEntity InserirUsuario(@RequestBody Usuario usuario) {//, @RequestBody Endereco endereco) {
+    public ResponseEntity InserirUsuario(@RequestBody Usuario usuario) {
         System.out.println("Entrou no Post");
         ResponseEntity retorno = ResponseEntity.badRequest().build();
 
         try {
-            if (usuario != null && usuario.getId() == null) {// && endereco != null && endereco.getId() == null) {
+            if (usuario != null && usuario.getId() == null) {
                 
                 Endereco endereco = viaCepService.BuscarEnderecoPor(usuario.getCep());
                 
                 usuario.setEndereco(endereco);
                 
                 Usuario usuarioInserido = usuarioRepository.save(usuario);
+                
 
                 URI uri = ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand(usuarioInserido).toUri();
 
@@ -116,25 +120,36 @@ public class UsuarioController {
     }
 
     @PutMapping
+    @Transactional
     public ResponseEntity AtualizarUsuario(@RequestBody Usuario usuario) {
         System.out.println("Entrou");
         ResponseEntity retorno = ResponseEntity.badRequest().build();
-        System.out.println("Usuario: " + usuario.getNome());
-        System.out.println("Usuario: " + usuario.getEmail());
-        System.out.println("Usuario: " + usuario);
+        
+        Usuario usuarioGravado = usuarioRepository.findByEmail(usuario.getEmail());
+        
+        System.out.println("Usuario: " + usuarioGravado.getNome());
+        System.out.println("Usuario: " + usuarioGravado.getEmail());
+        System.out.println("Usuario: " + usuarioGravado.getId());
         try {
 
-            if (usuario != null && usuario.getId() != null) {
+            if (usuarioGravado != null && usuarioGravado.getId() != null) {
                 System.out.println("Entrou no if");
-                Usuario usuarioGravado = this.findById(usuario.getId());
+                
                 System.out.println("Gravado: " + usuarioGravado);
                 if (usuarioGravado != null) {
 
-                    usuarioGravado = usuarioRepository.save(usuario);
+                    Endereco endereco = viaCepService.BuscarEnderecoPor(usuario.getCep());
 
-                    URI uri = ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand(usuarioGravado).toUri();
+                    usuarioGravado.setEndereco(endereco);
+                    usuarioGravado.setNome(usuario.getNome());
+                    usuarioGravado.setCep(usuario.getCep());
+                    usuarioGravado.setTelefone(usuario.getTelefone());
 
-                    retorno = ResponseEntity.created(uri).body(usuarioGravado);
+//                    usuarioGravado = usuarioRepository.save(usuario);
+
+//                    URI uri = ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand(usuarioGravado).toUri();
+
+                    retorno = ResponseEntity.ok(usuarioGravado);
                 }
             }
         } catch (Exception e) {
