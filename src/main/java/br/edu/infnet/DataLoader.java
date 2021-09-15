@@ -3,7 +3,7 @@ package br.edu.infnet;
 
 import br.edu.infnet.domain.Endereco;
 import br.edu.infnet.domain.Usuario;
-import br.edu.infnet.service.UsuarioService;
+import br.edu.infnet.repository.UsuarioRepository;
 import br.edu.infnet.service.ViaCepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class DataLoader implements ApplicationRunner{
     
     @Autowired
-    private UsuarioService usuarioService;
+    private UsuarioRepository usuarioRepository;
     
     @Autowired
     private ViaCepService viaCepService;
@@ -33,15 +33,14 @@ public class DataLoader implements ApplicationRunner{
         usuario.setNome("Bilbo Bolseiro");
         
         usuario.setEmail("bilbobolseiro@terramedia.com");
-        usuario.setTelefone("23569874");
-        System.out.println("!!!Foi até aqui!!!");
+        usuario.setTelefone("23569874");        
         usuario.setCep("03607000");
         
         usuario.setEndereco(endereco);
         
-       usuarioService.Incluir(usuario);
+       usuarioRepository.save(usuario);
         
-        System.out.println(usuario);
+        
     }
     
 }

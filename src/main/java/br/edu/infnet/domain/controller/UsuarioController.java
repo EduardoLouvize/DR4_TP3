@@ -19,6 +19,7 @@ import br.edu.infnet.domain.Endereco;
 import br.edu.infnet.domain.Usuario;
 import br.edu.infnet.repository.UsuarioRepository;
 import br.edu.infnet.service.ViaCepService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping(path = {"/usuarios"})
@@ -30,7 +31,7 @@ public class UsuarioController {
     @Autowired
     ViaCepService viaCepService;
 
-    @GetMapping(path = {"/"})
+    @GetMapping
     public ResponseEntity ObterUsuarios() {
         ResponseEntity retorno = ResponseEntity.notFound().build();
         List<Usuario> lista = (List<Usuario>) usuarioRepository.findAll();
@@ -40,7 +41,7 @@ public class UsuarioController {
         return retorno;
     }
 
-    @GetMapping(path = {"{id}"})
+    @GetMapping(path = {"/{id}"})
     public ResponseEntity ObterPorId(@PathVariable int id) {
         ResponseEntity retorno = ResponseEntity.notFound().build();
         Usuario usuario = this.findById(id);
@@ -68,9 +69,9 @@ public class UsuarioController {
         ResponseEntity retorno = ResponseEntity.notFound().build();
 
         try {
-            System.out.println("Entrou no getEmail 1");
+           
             Usuario resultado = usuarioRepository.findByEmail(email);
-            System.out.println("Resultado: " + resultado);
+            
             if (resultado != null) {
                 retorno = ResponseEntity.ok().body(resultado);
             }
@@ -95,7 +96,7 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity InserirUsuario(@RequestBody Usuario usuario) {
-        System.out.println("Entrou no Post");
+       
         ResponseEntity retorno = ResponseEntity.badRequest().build();
 
         try {
@@ -122,21 +123,15 @@ public class UsuarioController {
     @PutMapping
     @Transactional
     public ResponseEntity AtualizarUsuario(@RequestBody Usuario usuario) {
-        System.out.println("Entrou");
+        
         ResponseEntity retorno = ResponseEntity.badRequest().build();
         
-        Usuario usuarioGravado = usuarioRepository.findByEmail(usuario.getEmail());
+        Usuario usuarioGravado = usuarioRepository.findByEmail(usuario.getEmail());        
         
-        System.out.println("Usuario: " + usuarioGravado.getNome());
-        System.out.println("Usuario: " + usuarioGravado.getEmail());
-        System.out.println("Usuario: " + usuarioGravado.getId());
         try {
 
-            if (usuarioGravado != null && usuarioGravado.getId() != null) {
-                System.out.println("Entrou no if");
+            if (usuarioGravado != null && usuarioGravado.getId() != null) {   
                 
-                System.out.println("Gravado: " + usuarioGravado);
-                if (usuarioGravado != null) {
 
                     Endereco endereco = viaCepService.BuscarEnderecoPor(usuario.getCep());
 
@@ -145,17 +140,31 @@ public class UsuarioController {
                     usuarioGravado.setCep(usuario.getCep());
                     usuarioGravado.setTelefone(usuario.getTelefone());
 
-//                    usuarioGravado = usuarioRepository.save(usuario);
-
-//                    URI uri = ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand(usuarioGravado).toUri();
-
                     retorno = ResponseEntity.ok(usuarioGravado);
-                }
+                
             }
         } catch (Exception e) {
 
         }
 
+        return retorno;
+    }
+    
+    @DeleteMapping(path = {"/{email}"})
+    public ResponseEntity DeletarUsuario(@PathVariable String email) {
+        
+        ResponseEntity retorno = ResponseEntity.badRequest().build();
+        
+        Usuario usuarioGravado = usuarioRepository.findByEmail(email);
+        
+        
+        if(usuarioGravado != null){
+            
+            usuarioRepository.deleteById(usuarioGravado.getId());
+            
+            retorno = ResponseEntity.ok().build();
+        }       
+        
         return retorno;
     }
 

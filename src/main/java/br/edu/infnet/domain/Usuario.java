@@ -80,7 +80,7 @@ public class Usuario implements Serializable {
     }
 
     public void setEndereco(Endereco endereco) {
-//        endereco = viaCepService.BuscarEnderecoPor(getCep());
+
         this.endereco = endereco;
     }
 
